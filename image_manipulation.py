@@ -11,7 +11,7 @@ for root, dirpath, names in os.walk(data_dir):
     for name in names:
         soft_path = os.path.join(root, name)
         if soft_path[-4:] == '.png':
-            print(soft_path)
+            # print(soft_path)
             
             image = cv2.imread(soft_path, cv2.IMREAD_GRAYSCALE)
             image = cv2.resize(image, (int(image.shape[1]*0.2), int(image.shape[0]*0.2)),interpolation = cv2.INTER_AREA)
@@ -31,7 +31,7 @@ final_image = images[0]
 for i in range(1,len(images)):
     final_image = np.vstack((final_image, images[i]))
 
-print("/nOn the left is the original image and on the right is the image that has been fliped, rotated, or both")
+print("\n\nOn the left is the original image and on the right is the image that has been fliped, rotated, or both\n\n")
 
 cv2.imshow('images with rotations or translations', final_image)     
 cv2.waitKey(0)

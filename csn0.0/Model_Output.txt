@@ -1,0 +1,31 @@
+(28, 800, 800)
+(28, 800, 800)
+(28, 800, 800)
+(28, 800, 800)
+(10, 800, 800)
+(10, 800, 800)
+(10, 800, 800)
+(10, 800, 800)
+2023-04-28 18:38:14.523448: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-04-28 18:38:14.560402: I tensorflow/core/common_runtime/process_util.cc:146] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+Epoch 1/10
+6/6 [==============================] - 33s 5s/step - loss: 0.2894 - accuracy: 0.5536 - val_loss: 0.1032 - val_accuracy: 0.8000
+Epoch 2/10
+6/6 [==============================] - 30s 5s/step - loss: 0.2517 - accuracy: 0.6607 - val_loss: 0.0634 - val_accuracy: 1.0000
+Epoch 3/10
+6/6 [==============================] - 30s 5s/step - loss: 0.1815 - accuracy: 0.8571 - val_loss: 0.0479 - val_accuracy: 1.0000
+Epoch 4/10
+6/6 [==============================] - 30s 5s/step - loss: 0.1537 - accuracy: 0.8214 - val_loss: 0.0382 - val_accuracy: 1.0000
+Epoch 5/10
+6/6 [==============================] - 30s 5s/step - loss: 0.1533 - accuracy: 0.8036 - val_loss: 0.0322 - val_accuracy: 1.0000
+Epoch 6/10
+6/6 [==============================] - 30s 5s/step - loss: 0.1106 - accuracy: 0.8929 - val_loss: 0.0343 - val_accuracy: 1.0000
+Epoch 7/10
+6/6 [==============================] - 30s 5s/step - loss: 0.1085 - accuracy: 0.9286 - val_loss: 0.0556 - val_accuracy: 1.0000
+Epoch 8/10
+6/6 [==============================] - 30s 5s/step - loss: 0.0908 - accuracy: 0.9286 - val_loss: 0.0744 - val_accuracy: 1.0000
+Epoch 9/10
+6/6 [==============================] - 30s 5s/step - loss: 0.0837 - accuracy: 0.9464 - val_loss: 0.1317 - val_accuracy: 0.7500
+Epoch 10/10
+6/6 [==============================] - 30s 5s/step - loss: 0.0885 - accuracy: 0.9643 - val_loss: 0.0887 - val_accuracy: 0.9000

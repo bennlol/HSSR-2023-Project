@@ -1,39 +1,41 @@
-import cv2, os, random
+import cv2, os, random, sys
 import numpy as np
 
-rotations = [cv2.ROTATE_90_CLOCKWISE, cv2.ROTATE_90_COUNTERCLOCKWISE]
+ROTATIONS = [cv2.ROTATE_90_CLOCKWISE, cv2.ROTATE_90_COUNTERCLOCKWISE, cv2.ROTATE_180 ]
 DIR = os.path.dirname(os.path.realpath(__file__))
-data_dir = os.path.join(DIR, 'data/test1/0/')
-data_2_dir = os.path.join(DIR, 'data/test1/1/')
 
-images = []
+def randomRotation(img):
+    return cv2.rotate(img, random.choice(ROTATIONS))
 
-for root, dirpath, names in os.walk(data_dir):
-    for name in names:
-        soft_path = os.path.join(root, name)
-        if soft_path[-4:] == '.png':
-            # print(soft_path)
-            
-            image = cv2.imread(soft_path)
-            # image = cv2.resize(image, (int(image.shape[1]*0.2), int(image.shape[0]*0.2)),interpolation = cv2.INTER_AREA)
-            
-            # if random.randint(0,2)==0:
-            #     changedimage = cv2.rotate(image, random.choice(rotations))
-            # elif random.randint(0,1) ==0:
-            #     changedimage = cv2.flip(image, random.randint(-1,1))
-            # else:
-            #     changedimage = cv2.rotate(image, random.choice(rotations))
-            #     changedimage = cv2.flip(image, random.randint(-1,1))
-                
-            cv2.imwrite(data_2_dir+str(random.randint(0,9))+name, image)
-print('done')
+def randomFlip(img):
+    return cv2.flip(img, random.randint(-1,1))
 
-# final_image = images[0]
-# for i in range(1,len(images)):
-#     final_image = np.vstack((final_image, images[i]))
+def resize(img, scale=0.5):
+    return cv2.resize(img, (int(img.shape[1]*scale), int(img.shape[0]*scale)), interpolation = cv2.INTER_AREA)
 
-# print("\n\nOn the left is the original image and on the right is the image that has been fliped, rotated, or both\n\n")
+def mutateDirectory(fromDir, toDir):
+    data_dir = os.path.join(DIR, fromDir)
+    data_2_dir = os.path.join(DIR, toDir)
+    
+    for root, dirpath, names in os.walk(data_dir):
+        for name in names:
+            soft_path = os.path.join(root, name)
+            if soft_path[-4:] == '.png':
+                type = random.randint(0,2)
+                image = cv2.imread(soft_path)
+                image = randomFlip(image) * int(type!=0) + randomRotation(image) * (type+1)%2
+                cv2.imwrite(data_2_dir+name, image)
 
-# cv2.imshow('images with rotations or translations', final_image)     
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+def mutateImage(img):
+    type = random.randint(0,2)
+    return randomFlip(img) * int(type!=0) + randomRotation(img) * (type+1)%2  
+
+def mutateArray(arr):   
+    for i, img in enumerate(arr):
+        type = random.randint(0,2)
+        arr[i] = randomFlip(img) * int(type!=0) + randomRotation(img) * (type+1)%2
+    return arr
+        
+if __name__ == 'main':
+    mutateDirectory('data/test1/0','data/test1/1')
+    print('Done')

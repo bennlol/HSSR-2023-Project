@@ -36,6 +36,6 @@ def mutateArray(arr):
         arr[i] = randomFlip(img) * int(type!=0) + randomRotation(img) * (type+1)%2
     return arr
         
-if __name__ == 'main':
+if __name__ == '__main__':
     mutateDirectory('data/test1/0','data/test1/1')
     print('Done')

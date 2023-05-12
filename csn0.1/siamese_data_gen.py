@@ -42,8 +42,8 @@ class Siamese_data_gen(tf.keras.utils.Sequence):
         batches = self.df[index * self.batch_size:(index + 1) * self.batch_size]
         ybatches = self.dfy[index * self.batch_size:(index + 1) * self.batch_size]
         x,y = self.__get_data(batches, ybatches)
-        print(np.asarray(y).shape)
-        return x, y
+        print(np.asarray(x).shape)
+        return [x, y]
     
     def on_poch_end(self):
         # if self.shuffle:

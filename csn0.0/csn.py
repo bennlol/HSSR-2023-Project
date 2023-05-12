@@ -9,7 +9,7 @@ import cv2
 import numpy as np
 import os
 
-DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
+DIR = os.path.dirname(os.path.realpath(__file__))
 TRAINING_1_DIR = 'data\\train1\\'
 TRAINING_2_DIR = 'data\\train2\\'
 VALIDATION_1_DIR = "data\\test1\\"

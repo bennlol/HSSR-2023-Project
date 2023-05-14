@@ -10,7 +10,7 @@ import numpy as np
 import os
 
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
-DATA_DIR = 'clusters\\'
+DATA_DIR = 'clusters'
 
 epochs = 1
 batch_size = 40

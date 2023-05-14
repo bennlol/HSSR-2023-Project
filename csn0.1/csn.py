@@ -2,32 +2,33 @@ from keras.models import Sequential
 import tensorflow as tf
 from keras import Model
 from keras.layers import *
-from keras.losses import binary_crossentropy
 from keras.preprocessing.image import ImageDataGenerator
 import matplotlib.image  as mpimg
 import matplotlib.pyplot as plt
-from siamese_data_gen import Siamese_data_gen 
+from siamese_data_gen3 import Siamese_data_gen
 import numpy as np
 import os
 
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
-TRAINING_DIR = 'data\\train\\'
-VALIDATION_DIR = "data\\validate\\"
+DATA_DIR = 'clusters\\'
 
-epochs = 5
-batch_size = 4
+epochs = 1
+batch_size = 40
 margin = 1
 
-def load_data(dir):
+def load_data(dir, split = (85,15), data_percent_used = 100):
     data_dir = os.path.join(DIR, dir)
     filelist = []
     classlist = []
     for root, dirpath, names in os.walk(data_dir):
         for name in names:
-            soft_path = os.path.join(root, name)
-            filelist.append(soft_path)
-            classlist.append(root[-1])
-    return filelist, classlist
+            if root[-1] != "-1" and name[-3:]=='png':
+                soft_path = os.path.join(root, name)
+                filelist.append(soft_path)
+                classlist.append(root[-1])
+    # filelist = np.random.choice(filelist, size=3, replace=False)
+    split_index = int(split[0]/100 * len(filelist)) 
+    return filelist[:split_index], classlist[:split_index], filelist[split_index:], classlist[split_index:]
 
 
 def euclid_dist(vects):
@@ -47,8 +48,7 @@ def loss(margin=1):
         )
     return contrastive_loss
 
-train_data_paths, train_class_data  = load_data(TRAINING_DIR)
-val_data_paths, val_class_data = load_data(VALIDATION_DIR)
+train_data_paths, train_class_data, val_data_paths, val_class_data = load_data(DATA_DIR, split = (85,15), data_percent_used = 10)
 
 model = Sequential()
 
@@ -61,17 +61,17 @@ model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.2))
 
-# model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))cl
-# model.add(Dropout(0.1))
+model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.1))
 
-# model.add(Conv2D(128, kernel_size=(3,3), activation='relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.2))
+model.add(Conv2D(128, kernel_size=(3,3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.2))
 
 model.add(Flatten())
 # model.add(BatchNormalization())
-model.add(Dense(64, activation='relu'))
+model.add(Dense(256, activation='relu'))
 
 input1=Input((800,800,1))
 input2=Input((800,800,1))
@@ -100,3 +100,19 @@ history = siamese.fit(
     batch_size=batch_size,
     epochs=epochs,
 )
+
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='upper right')
+plt.show()
+
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('Model acc')
+plt.ylabel('acc')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='upper right')
+plt.show()

@@ -1,6 +1,9 @@
 import cv2, os, random, sys
 import numpy as np
+"""
+Mutations: rotation, scale, noise, flip, invert colors 
 
+"""
 ROTATIONS = [cv2.ROTATE_90_CLOCKWISE, cv2.ROTATE_90_COUNTERCLOCKWISE, cv2.ROTATE_180 ]
 DIR = os.path.dirname(os.path.realpath(__file__))
 

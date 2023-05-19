@@ -17,14 +17,8 @@ class Siamese_data_gen(Sequence):
     def __getitem__(self, index):
         pairs = []
         labels = []
-        n_pairs = self.batch_size# // 2 # half positive half neg
-        for i in range(n_pairs):
-            # idx1 = (index * n_pairs + i) % len(self.paths)
-            # idx2 = (idx1 + n_pairs) % len(self.paths)
-            # pairs.append((self.paths[idx1], self.paths[idx2]))
-            # labels.append(1)
-
-            idx1 = (index * n_pairs + i) % len(self.paths)
+        for i in range(self.batch_size):
+            idx1 = (index * self.batch_size + i) % len(self.paths)
             idx2 = (np.random.choice(len(self.class_data))) % len(self.paths)
             pairs.append((self.paths[idx1], self.paths[idx2]))
             labels.append(int(self.class_data[idx1] == self.class_data[idx2]))
@@ -37,13 +31,7 @@ class Siamese_data_gen(Sequence):
             img2 = tf.keras.preprocessing.image.load_img(pair[1], target_size=self.input_size, color_mode='grayscale')
             img1_arr[i] = np.array(img1).reshape(self.input_size)
             img2_arr[i] = np.array(img2).reshape(self.input_size)
-
         return [img1_arr, img2_arr], np.array(labels)
     
     def on_epoch_end(self):
         pass
-        # if self.shuffle == True:
-        #     indexes = np.arange(len(self.paths))
-        #     np.random.shuffle(indexes)
-        #     self.paths = [self.paths[i] for i in indexes]
-        #     self.class_data

@@ -61,9 +61,9 @@ model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.2))
 
-# model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.1))
+model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.1))
 
 # model.add(Conv2D(128, kernel_size=(3,3), activation='relu'))
 # model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -84,10 +84,7 @@ normal_layer = BatchNormalization()(merge_layer)
 output_layer = Dense(1, activation="sigmoid")(normal_layer)
 siamese = Model(inputs=[input1, input2], outputs=output_layer)
 
-
-
 siamese.compile(loss=loss(margin=margin), optimizer="RMSprop", metrics=["accuracy"])
-
 
 traingen = Siamese_data_gen(train_data_paths, train_class_data, batch_size = batch_size, input_size=(800,800,1))
 print(siamese.summary())

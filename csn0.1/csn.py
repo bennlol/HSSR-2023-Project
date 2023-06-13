@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from siamese_data_gen3 import Siamese_data_gen
 import numpy as np
 import os
+import sys
 
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 DATA_DIR = 'clusters'

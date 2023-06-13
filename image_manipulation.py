@@ -13,6 +13,14 @@ def randomRotation(img):
 def randomFlip(img):
     return cv2.flip(img, random.randint(-1,1))
 
+def randomNoise(img, var = 5):
+    dims = np.shape(img)
+    noise = np.random.normal(0,var,size=dims).astype("uint8")
+    img = img + noise
+    return img
+
+
+
 def resize(img, scale=0.5):
     return cv2.resize(img, (int(img.shape[1]*scale), int(img.shape[0]*scale)), interpolation = cv2.INTER_AREA)
 

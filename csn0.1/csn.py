@@ -11,6 +11,7 @@ import os
 import sys
 
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
+DIR = "/content/HSSR-2023-Project/"
 DATA_DIR = 'clusters'
 
 epochs = 1

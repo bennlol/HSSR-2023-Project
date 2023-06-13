@@ -99,7 +99,12 @@ history = siamese.fit(
     epochs=epochs,
 )
 
-siamese.save_weights()
+siamese_json = siamese.to_json
+with open("model.json", "w") as json:
+    json.write(siamese_json)
+siamese.save_weights("model.h5")
+
+
 
 
 plt.plot(history.history['loss'])

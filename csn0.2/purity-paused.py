@@ -1,7 +1,7 @@
 # take pairs of images from a cluseter true image predicted value and decision
 import cv2, os, random, sys
 import numpy as np
-from keras.models import Sequential, model_from_json
+from keras.models import model_from_json
 
 CLUSTER = 1
 

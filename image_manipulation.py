@@ -1,5 +1,6 @@
 import cv2, os, random, sys
 import numpy as np
+
 """
 Mutations: rotation, scale, noise, flip, invert colors 
 
@@ -13,13 +14,21 @@ def randomRotation(img):
 def randomFlip(img):
     return cv2.flip(img, random.randint(-1,1))
 
-def randomNoise(img, var = 5):
+def randomNoise(img, var = 10):
     dims = np.shape(img)
     noise = np.random.normal(0,var,size=dims).astype("uint8")
     img = img + noise
+    print(noise)
     return img
 
+def randomSPnoise(img, prob = 0.1):
+    for y in range(len(img)):
+        for x in range(len(img[y])):
+            if random.random() < prob:
+                img[y][x] = random.randint(0,1)*255
+    return img
 
+             
 
 def resize(img, scale=0.5):
     return cv2.resize(img, (int(img.shape[1]*scale), int(img.shape[0]*scale)), interpolation = cv2.INTER_AREA)
@@ -48,5 +57,9 @@ def mutateArray(arr):
     return arr
         
 if __name__ == '__main__':
-    mutateDirectory('data/test1/0','data/test1/1')
+    img = cv2.imread(os.path.join(DIR, "clusters\-1\V1-T1-0step5s.png"), cv2.IMREAD_GRAYSCALE)
+    
+    img = randomNoise(img)
+    cv2.imshow("IMG", img)
+    cv2.waitKey(0)
     print('Done')

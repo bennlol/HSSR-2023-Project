@@ -14,8 +14,8 @@ DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 DIR = "/content/HSSR-2023-Project/"
 DATA_DIR = 'clusters'
 
-epochs = 1
-batch_size = 40
+epochs = 4
+batch_size = 16
 margin = 1
 
 def load_data(dir, split = (85,15), data_percent_used = 100):

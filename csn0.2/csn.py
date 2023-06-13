@@ -99,6 +99,9 @@ history = siamese.fit(
     epochs=epochs,
 )
 
+siamese.save_weights()
+
+
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
 plt.title('Model loss')

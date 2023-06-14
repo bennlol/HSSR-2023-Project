@@ -34,4 +34,8 @@ class Siamese_data_gen(Sequence):
         return [img1_arr, img2_arr], np.array(labels)
     
     def on_epoch_end(self):
-        pass
+        if self.shuffle:
+            indices = np.arange(len(self.paths))
+            np.random.shuffle(indices)
+            self.paths = [self.paths[i] for i in indices]
+            self.class_data = [self.class_data[i] for i in indices]

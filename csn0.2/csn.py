@@ -13,7 +13,7 @@ import sys
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 DATA_DIR = 'clusters'
 
-epochs = 8
+epochs = 1
 batch_size = 16
 margin = 1
 
@@ -49,7 +49,7 @@ def loss(margin=1):
         )
     return contrastive_loss
 
-train_data_paths, train_class_data, val_data_paths, val_class_data = load_data(DATA_DIR, split = (85,15), data_percent_used = 10)
+train_data_paths, train_class_data, val_data_paths, val_class_data = load_data(DATA_DIR, split = (85,15), data_percent_used = 100)
 
 model = Sequential()
 
@@ -58,9 +58,9 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.2))
 
 
-model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.2))
+# model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+# model.add(Dropout(0.2))
 
 # model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
 # model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -70,7 +70,7 @@ model.add(Dropout(0.2))
 
 model.add(Flatten())
 model.add(BatchNormalization())
-model.add(Dense(64, activation='relu'))
+model.add(Dense(32, activation='relu'))
 
 input1=Input((800,800,1))
 input2=Input((800,800,1))
@@ -97,10 +97,10 @@ history = siamese.fit(
     epochs=epochs,
 )
 
-siamese_json = siamese.to_json
+siamese_json = siamese.to_json()
 with open("model.json", "w") as json:
     json.write(siamese_json)
-siamese.save_weights("model.h5")
+siamese.save_weights("/model.h5")
 
 
 

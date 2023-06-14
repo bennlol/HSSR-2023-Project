@@ -12,14 +12,24 @@ margin = 1
 input_size = (400,400,1)
 inputShape = (400,400,1)
 
-def load_pair(img1, img2, dir):
-    img1 = cv2.imread(os.path.join(dir,img1), cv2.IMREAD_GRAYSCALE)
-    img2 = cv2.imread(os.path.join(dir,img2), cv2.IMREAD_GRAYSCALE)
-    img1 = np.expand_dims(img1, axis=-1)  # Add extra dimension
-    img2 = np.expand_dims(img2, axis=-1)  # Add extra dimension
-    img1 = cv2.resize(img1, (400, 400), interpolation = cv2.INTER_AREA)  # Resize image
-    img2 = cv2.resize(img2, (400, 400), interpolation = cv2.INTER_AREA)  # Resize image
-    return [img1, img2]
+def load_pair(img1, img2, dir, pair=True):
+    if pair:
+        img1 = cv2.imread(os.path.join(dir,img1), cv2.IMREAD_GRAYSCALE)
+        img2 = cv2.imread(os.path.join(dir,img2), cv2.IMREAD_GRAYSCALE)
+        img1 = np.expand_dims(img1, axis=-1)  
+        img2 = np.expand_dims(img2, axis=-1)  
+        img1 = cv2.resize(img1, (400, 400), interpolation = cv2.INTER_AREA) 
+        img2 = cv2.resize(img2, (400, 400), interpolation = cv2.INTER_AREA) 
+        img1 = np.expand_dims(img1, axis=0)
+        img2 = np.expand_dims(img2, axis=0)
+        return [img1, img2]
+    else:
+        img1 = cv2.imread(os.path.join(dir,img1), cv2.IMREAD_GRAYSCALE)
+        img1 = np.expand_dims(img1, axis=-1)  
+        img1 = cv2.resize(img1, (400, 400), interpolation = cv2.INTER_AREA) 
+        img1 = np.expand_dims(img1, axis=0)
+        return img1
+
 
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 cluster_dirs = [os.path.join(os.path.join(DIR, "clusters"),str(dir)) for dir in range(0,6)] #use like cluster_dirs[0] for the 0 cluster
@@ -87,18 +97,17 @@ normal_layer = BatchNormalization()(merge_layer)
 output_layer = Dense(1, activation="sigmoid")(normal_layer)
 siamese = Model(inputs=[input1, input2], outputs=output_layer)
 
-siamese.compile(loss=loss(margin=margin), optimizer="RMSprop", metrics=["accuracy"])
 
-siamese.load_weights("model.h5")
+siamese.load_weights("model1.h5")
 
 results = siamese.predict(load_pair("V4-T8-31step10s.png","V4-T8-31step10s.png",cluster_dirs[2]))
 print(f"(single void defect) : (same image), prediction: ${results}")
 
-results = siamese.predict(cv2.imread(DIR+"V4-T8-31step10s.png", cv2.IMREAD_GRAYSCALE), randomRotation(cv2.imread(DIR+"V4-T8-31step10s.png", cv2.IMREAD_GRAYSCALE)), cluster_dirs[2])
-print(f"(single void defect) : (same image but rotated), prediction: ${results}")
+results = siamese.predict(load_pair("V4-T8-31step10s.png", "V4-T8-47step10s.png", cluster_dirs[2]))
+print(f"(single void defect) : (single void defect), prediction: ${results}")
 
 results = siamese.predict(load_pair("V4-T8-31step10s.png","V4-T16-86step10s.png",cluster_dirs[2]))
 print(f"(single void defect) : (double void defect), prediction: ${results}")
 
-results = siamese.predict(load_pair("V4-T8-31step10s.png","V4-T7-79step10s.png",cluster_dirs[2]))
+results = siamese.predict(load_pair("V4-T8-31step10s.png","V4-T4-6step10s.png",cluster_dirs[2]))
 print(f"(single void defect) : (grain defect), prediction: ${results}")

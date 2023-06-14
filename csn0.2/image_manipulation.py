@@ -9,7 +9,7 @@ ROTATIONS = [cv2.ROTATE_90_CLOCKWISE, cv2.ROTATE_90_COUNTERCLOCKWISE, cv2.ROTATE
 DIR = os.path.dirname(os.path.realpath(__file__))
 
 def randomRotation(img):
-    return cv2.rotate(img, random.choice(ROTATIONS))
+    return np.transpose(img, (1, 0, 2))
 
 def randomFlip(img):
     return cv2.flip(img, random.randint(-1,1))

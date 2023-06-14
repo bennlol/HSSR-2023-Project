@@ -53,7 +53,7 @@ def loss(margin=1):
         )
     return contrastive_loss
 
-train_data_paths, train_class_data, val_data_paths, val_class_data = load_data(DATA_DIR, split = (85,15), data_percent_used = 10)
+train_data_paths, train_class_data, val_data_paths, val_class_data = load_data(DATA_DIR, split = (85,15), data_percent_used = 100)
 
 model = Sequential()
 

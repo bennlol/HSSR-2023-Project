@@ -13,17 +13,12 @@ input_size = (400,400,1)
 inputShape = (400,400,1)
 
 def load_pair(img1, img2, dir):
-    img1 = tf.keras.preprocessing.image.load_img(os.path.join(dir,img1), target_size=input_size, color_mode='grayscale')
-    img2 = tf.keras.preprocessing.image.load_img(os.path.join(dir,img2), target_size=input_size, color_mode='grayscale')
-    img1 = cv2.resize(np.array(img1), input_size[0:2], interpolation = cv2.INTER_AREA)            
-    img2 = cv2.resize(np.array(img2), input_size[0:2], interpolation = cv2.INTER_AREA)    
-    img1 = np.array(img1).reshape(input_size)
-    img2 = np.array(img2).reshape(input_size)
-    print(img1.shape)
-    # sys.exit()        
-    # cv2.imshow("Resized image", img1)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    img1 = cv2.imread(dir+img1, cv2.IMREAD_GRAYSCALE)
+    img2 = cv2.imread(dir+img2, cv2.IMREAD_GRAYSCALE)
+    img1 = np.expand_dims(img1, axis=-1)  # Add extra dimension
+    img2 = np.expand_dims(img2, axis=-1)  # Add extra dimension
+    img1 = cv2.resize(img1, (400, 400))  # Resize image
+    img2 = cv2.resize(img2, (400, 400))  # Resize image
     return [img1, img2]
 
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)

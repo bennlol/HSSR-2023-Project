@@ -1,14 +1,16 @@
 import tensorflow as tf
 import numpy as np
 from keras.utils import Sequence
-
+import cv2, sys
+# from image_manipulation import *
 class Siamese_data_gen(Sequence):
-    def __init__(self, data_paths, class_data, batch_size, input_size, shuffle=True):
-        self.paths = data_paths
+    def __init__(self, data_paths, class_data, batch_size, input_size, shuffle=True, data_augmentation = True):
+        self.paths = data_paths 
         self.class_data = class_data
         self.batch_size = batch_size
         self.input_size = input_size
         self.shuffle = shuffle
+        self.data_augmentation = data_augmentation
         self.on_epoch_end()
 
     def __len__(self):
@@ -29,6 +31,11 @@ class Siamese_data_gen(Sequence):
         for i, pair in enumerate(pairs):
             img1 = tf.keras.preprocessing.image.load_img(pair[0], target_size=self.input_size, color_mode='grayscale')
             img2 = tf.keras.preprocessing.image.load_img(pair[1], target_size=self.input_size, color_mode='grayscale')
+            img1 = cv2.resize(np.array(img1), self.input_size[0:2], interpolation = cv2.INTER_AREA)            
+            img2 = cv2.resize(np.array(img2), self.input_size[0:2], interpolation = cv2.INTER_AREA)            
+            # cv2.imshow("Resized image", img1)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
             img1_arr[i] = np.array(img1).reshape(self.input_size)
             img2_arr[i] = np.array(img2).reshape(self.input_size)
         return [img1_arr, img2_arr], np.array(labels)

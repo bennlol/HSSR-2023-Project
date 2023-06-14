@@ -3,6 +3,7 @@ import tensorflow as tf
 from keras import Model
 from keras.layers import *
 from keras.preprocessing.image import ImageDataGenerator
+from keras.regularizers import l2
 import matplotlib.image  as mpimg
 import matplotlib.pyplot as plt
 from siamese_data_gen import Siamese_data_gen
@@ -16,6 +17,7 @@ DATA_DIR = 'clusters'
 epochs = 1
 batch_size = 16
 margin = 1
+inputShape = (400,400,1)
 
 def load_data(dir, split = (85,15), data_percent_used = 100):
     data_dir = os.path.join(DIR, dir)
@@ -53,27 +55,39 @@ train_data_paths, train_class_data, val_data_paths, val_class_data = load_data(D
 
 model = Sequential()
 
-model.add(Conv2D(32, kernel_size=(3,3), activation='relu', input_shape=(800,800,1)))
+model.add(Conv2D(16, kernel_size=(3, 3), activation='relu', input_shape=inputShape))
+model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.2))
+model.add(Dropout(0.4))
 
+model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.4))
 
-# model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.2))
+model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.4))
 
-# model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.1))
-
-
+model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.4))
 
 model.add(Flatten())
-model.add(BatchNormalization())
-model.add(Dense(32, activation='relu'))
 
-input1=Input((800,800,1))
-input2=Input((800,800,1))
+model.add(Dense(256, activation='relu', kernel_regularizer=l2(0.001)))
+model.add(Dropout(0.4))
+
+model.add(Dense(128, activation='relu', kernel_regularizer=l2(0.001)))
+model.add(Dropout(0.4))
+
+model.add(Dense(64, activation='relu', kernel_regularizer=l2(0.001)))
+model.add(Dropout(0.4))
+
+input1=Input(inputShape)
+input2=Input(inputShape)
 
 tower1 = model(input1)
 tower2 = model(input2)
@@ -85,9 +99,9 @@ siamese = Model(inputs=[input1, input2], outputs=output_layer)
 
 siamese.compile(loss=loss(margin=margin), optimizer="RMSprop", metrics=["accuracy"])
 
-traingen = Siamese_data_gen(train_data_paths, train_class_data, batch_size = batch_size, input_size=(800,800,1))
+traingen = Siamese_data_gen(train_data_paths, train_class_data, batch_size = batch_size, input_size=inputShape)
 print(siamese.summary())
-valgen = Siamese_data_gen(val_data_paths, val_class_data, batch_size = batch_size, input_size=(800,800,1))
+valgen = Siamese_data_gen(val_data_paths, val_class_data, batch_size = batch_size, input_size=inputShape)
 
 #(path) (name, type)
 history = siamese.fit(
@@ -100,7 +114,7 @@ history = siamese.fit(
 siamese_json = siamese.to_json()
 with open("model.json", "w") as json:
     json.write(siamese_json)
-siamese.save_weights("/model.h5")
+siamese.save_weights("model.h5")
 
 
 

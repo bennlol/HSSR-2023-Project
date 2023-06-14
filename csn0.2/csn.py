@@ -14,8 +14,8 @@ import sys
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 DATA_DIR = 'clusters'
 
-epochs = 1
-batch_size = 16
+epochs = 6
+batch_size = 32
 margin = 1
 inputShape = (400,400,1)
 
@@ -65,25 +65,25 @@ model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.4))
 
-# model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
-# model.add(BatchNormalization())
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.4))
+model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.4))
 
-# model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
-# model.add(BatchNormalization())
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.4))
+model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.4))
 
 model.add(Flatten())
 
-# model.add(Dense(256, activation='relu', kernel_regularizer=l2(0.001)))
-# model.add(Dropout(0.4))
+model.add(Dense(256, activation='relu', kernel_regularizer=l2(0.001)))
+model.add(Dropout(0.4))
 
-# model.add(Dense(128, activation='relu', kernel_regularizer=l2(0.001)))
-# model.add(Dropout(0.4))
+model.add(Dense(128, activation='relu', kernel_regularizer=l2(0.001)))
+model.add(Dropout(0.4))
 
-model.add(Dense(64, activation='relu'))#, kernel_regularizer=l2(0.001)))
+model.add(Dense(64, activation='relu', kernel_regularizer=l2(0.001)))
 model.add(Dropout(0.4))
 
 input1=Input(inputShape)

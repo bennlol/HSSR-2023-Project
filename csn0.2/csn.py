@@ -15,7 +15,7 @@ DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 DATA_DIR = 'clusters'
 
 epochs = 6
-batch_size = 32
+batch_size = 16
 margin = 1
 inputShape = (400,400,1)
 
@@ -29,6 +29,8 @@ def load_data(dir, split = (85,15), data_percent_used = 100):
                 soft_path = os.path.join(root, name)
                 filelist.append(soft_path)
                 classlist.append(root[-1])
+    filelist = filelist[:int(len(filelist) * data_percent_used/100)]
+    classlist = classlist[:int(len(classlist) * data_percent_used/100)]
     # filelist = np.random.choice(filelist, size=3, replace=False)
     split_index = int(split[0]/100 * len(filelist)) 
     return filelist[:split_index], classlist[:split_index], filelist[split_index:], classlist[split_index:]
@@ -51,7 +53,7 @@ def loss(margin=1):
         )
     return contrastive_loss
 
-train_data_paths, train_class_data, val_data_paths, val_class_data = load_data(DATA_DIR, split = (85,15), data_percent_used = 100)
+train_data_paths, train_class_data, val_data_paths, val_class_data = load_data(DATA_DIR, split = (85,15), data_percent_used = 10)
 
 model = Sequential()
 
@@ -98,10 +100,10 @@ output_layer = Dense(1, activation="sigmoid")(normal_layer)
 siamese = Model(inputs=[input1, input2], outputs=output_layer)
 
 siamese.compile(loss=loss(margin=margin), optimizer="RMSprop", metrics=["accuracy"])
-
-traingen = Siamese_data_gen(train_data_paths, train_class_data, batch_size = batch_size, input_size=inputShape)
 print(siamese.summary())
-valgen = Siamese_data_gen(val_data_paths, val_class_data, batch_size = batch_size, input_size=inputShape)
+
+traingen = Siamese_data_gen(train_data_paths, train_class_data, batch_size = batch_size, input_size=inputShape, shuffle = False)
+valgen = Siamese_data_gen(val_data_paths, val_class_data, batch_size = batch_size, input_size=inputShape, shuffle=False)
 
 #(path) (name, type)
 history = siamese.fit(

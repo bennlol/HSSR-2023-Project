@@ -13,12 +13,12 @@ input_size = (400,400,1)
 inputShape = (400,400,1)
 
 def load_pair(img1, img2, dir):
-    img1 = cv2.imread(dir+img1, cv2.IMREAD_GRAYSCALE)
-    img2 = cv2.imread(dir+img2, cv2.IMREAD_GRAYSCALE)
+    img1 = cv2.imread(os.path.join(dir,img1), cv2.IMREAD_GRAYSCALE)
+    img2 = cv2.imread(os.path.join(dir,img2), cv2.IMREAD_GRAYSCALE)
     img1 = np.expand_dims(img1, axis=-1)  # Add extra dimension
     img2 = np.expand_dims(img2, axis=-1)  # Add extra dimension
-    img1 = cv2.resize(img1, (400, 400))  # Resize image
-    img2 = cv2.resize(img2, (400, 400))  # Resize image
+    img1 = cv2.resize(img1, (400, 400), interpolation = cv2.INTER_AREA)  # Resize image
+    img2 = cv2.resize(img2, (400, 400), interpolation = cv2.INTER_AREA)  # Resize image
     return [img1, img2]
 
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)

@@ -9,7 +9,7 @@ ROTATIONS = [cv2.ROTATE_90_CLOCKWISE, cv2.ROTATE_90_COUNTERCLOCKWISE, cv2.ROTATE
 DIR = os.path.dirname(os.path.realpath(__file__))
 
 def randomRotation(img):
-    return np.transpose(img, (1, 0, 2))
+    return cv2.rotate(img, random.choice(ROTATIONS))
 
 def randomFlip(img):
     return cv2.flip(img, random.randint(-1,1))
@@ -18,7 +18,6 @@ def randomNoise(img, var = 10):
     dims = np.shape(img)
     noise = np.random.normal(0,var,size=dims).astype("uint8")
     img = img + noise
-    print(noise)
     return img
 
 def randomSPnoise(img, prob = 0.1):

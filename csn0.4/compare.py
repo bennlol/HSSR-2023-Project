@@ -10,6 +10,7 @@ from keras.regularizers import l2
 import tensorflow as tf
 from matplotlib import pyplot as plt
 margin = 1
+
 input_size = (400,400,1)
 inputShape = (400,400,1)
 
@@ -33,10 +34,8 @@ def load_pair(img1, dir1, img2 = None, dir2 = None, augment = None):
         img1 = np.expand_dims(img1, axis=0)
         return img1
 
-
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 cluster_dirs = [os.path.join(os.path.join(DIR, "clusters"),str(dir)) for dir in range(0,6)] #use like cluster_dirs[0] for the 0 cluster
-
 
 def euclid_dist(vects):
     x, y = vects

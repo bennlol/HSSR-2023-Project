@@ -28,32 +28,35 @@ def load_data(dir, split = (85,15), data_percent_used = 100):
                 soft_path = os.path.join(root, name)
                 filelist.append(soft_path)
                 classlist.append(root[-1])
-    filelist = filelist[:int(len(filelist) * data_percent_used/100)]
-    classlist = classlist[:int(len(classlist) * data_percent_used/100)]
     indices = np.arange(len(filelist))
     np.random.shuffle(indices)
     filelist = [filelist[i] for i in indices]
     classlist = [classlist[i] for i in indices]
+    
+    filelist = filelist[:int(len(filelist) * data_percent_used/100)]
+    classlist = classlist[:int(len(classlist) * data_percent_used/100)]
+    
     split_index = int(split[0]/100 * len(filelist)) 
     return filelist[:split_index], classlist[:split_index], filelist[split_index:], classlist[split_index:]
 
 
 def euclid_dist(vects):
-    x, y = vects
-    sum_square = tf.math.reduce_sum(tf.math.square(x - y), axis=1, keepdims=True)
-    return tf.math.sqrt(tf.math.maximum(sum_square, tf.keras.backend.epsilon()))
+    anchor, positive, negative = vects
+    positive_distance = tf.math.reduce_sum(tf.math.square(anchor - positive), axis=-1)
+    negative_distance = tf.math.reduce_sum(tf.math.square(anchor - negative), axis=-1)
+    return positive_distance, negative_distance
+
 
 def loss(margin=1):
-    # Contrastive loss = mean( (1-true_value) * square(prediction) +
-    #                         true_value * square( max(margin-prediction, 0) ))
-    def contrastive_loss(y_true, y_pred):
-        y_true = tf.cast(y_true, tf.float32)
-        square_pred = tf.math.square(y_pred)
-        margin_square = tf.math.square(tf.math.maximum(margin - (y_pred), 0))
-        return tf.math.reduce_mean(
-            (1 - y_true) * square_pred + (y_true) * margin_square
-        )
-    return contrastive_loss
+    def triplet_loss(y_pred, margin=1):
+        anchor, positive, negative = y_pred[:, 0], y_pred[:, 1], y_pred[:, 2]
+        distance_positive = tf.math.reduce_sum(tf.math.square(anchor - positive), axis=-1)
+        distance_negative = tf.math.reduce_sum(tf.math.square(anchor - negative), axis=-1)
+        loss = tf.math.maximum(distance_positive - distance_negative + margin, 0)
+        return tf.math.reduce_mean(loss)
+
+    return triplet_loss
+
 
 train_data_paths, train_class_data, val_data_paths, val_class_data = load_data(DATA_DIR, split = (85,15), data_percent_used = 100)
 
@@ -92,14 +95,15 @@ model.add(Dropout(0.4))
 
 input1=Input(inputShape)
 input2=Input(inputShape)
+input3=Input(inputShape)
 
 tower1 = model(input1)
 tower2 = model(input2)
+tower3 = model(input3)
 
-merge_layer = Lambda(euclid_dist)([tower1, tower2])
-normal_layer = BatchNormalization()(merge_layer)
-output_layer = Dense(1, activation="sigmoid")(normal_layer)
-siamese = Model(inputs=[input1, input2], outputs=output_layer)
+merge_layer = Lambda(euclid_dist)([tower1, tower2, tower3])
+output_layer = merge_layer
+siamese = Model(inputs=[input1, input2, input3], outputs=output_layer)
 
 siamese.compile(loss=loss(margin=margin), optimizer="RMSprop", metrics=["accuracy"])
 print(siamese.summary())

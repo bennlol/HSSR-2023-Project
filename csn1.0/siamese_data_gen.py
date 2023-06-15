@@ -21,43 +21,32 @@ class Siamese_data_gen(Sequence):
         return int(np.ceil(len(self.paths)/1.0 / self.batch_size )) * 2
 
     def __getitem__(self, index):
-        triplets = []
+        pairs = []
+        labels = []
         data_augment = []
         for i in range(self.batch_size):
-            neg_index = None #neg anch and pos are index for the anchour positivve and negative
-            anch_index = (index * self.batch_size + i) % (len(self.paths) *(self.data_augmentation+1))
-            pos_index = (np.random.choice(len(self.paths)*(self.data_augmentation+1)))
-            while self.class_data[anch_index%len(self.paths)] != self.class_data[pos_index%len(self.paths)]:
-                if neg_index == None:
-                    neg_index = pos_index
-                pos_index = (np.random.choice(len(self.paths)*(self.data_augmentation+1)))
-            while neg_index == None or self.class_data[anch_index%len(self.paths)] == self.class_data[neg_index%len(self.paths)]:
-                neg_index =  (np.random.choice(len(self.paths)*(self.data_augmentation+1)))
-                
-            triplets.append((self.paths[anch_index%len(self.paths)], self.paths[pos_index%len(self.paths)], self.paths[neg_index%len(self.paths)]))
+            idx1 = (index * self.batch_size + i) % (len(self.paths) *(self.data_augmentation+1))
+            idx2 = (np.random.choice(len(self.paths)*(self.data_augmentation+1)))
+            labels.append(int(self.class_data[idx1%len(self.paths)] == self.class_data[idx2%len(self.paths)]))
+            pairs.append((self.paths[idx1%len(self.paths)], self.paths[idx2%len(self.paths)]))
             if self.data_augmentation:
-                data_augment.append([anch_index//len(self.paths), pos_index//len(self.paths), neg_index//len(self.paths)])
+                data_augment.append([idx1//len(self.paths), idx2//len(self.paths)])
 
         # Load images for pairs
-        anchour_arr = np.zeros((self.batch_size,) + self.input_size, dtype="float32")
-        positive_arr = np.zeros((self.batch_size,) + self.input_size, dtype="float32")
-        negative_arr = np.zeros((self.batch_size,) + self.input_size, dtype="float32")
-        for i, triplet in enumerate(triplets):
-            anch = tf.keras.preprocessing.image.load_img(triplet[0], target_size=self.input_size, color_mode='grayscale')
-            pos = tf.keras.preprocessing.image.load_img(triplet[1], target_size=self.input_size, color_mode='grayscale')
-            neg = tf.keras.preprocessing.image.load_img(triplet[1], target_size=self.input_size, color_mode='grayscale')            
-            anch = cv2.resize(np.array(anch), self.input_size[0:2], interpolation = cv2.INTER_AREA)            
-            pos = cv2.resize(np.array(pos), self.input_size[0:2], interpolation = cv2.INTER_AREA)            
-            neg = cv2.resize(np.array(neg), self.input_size[0:2], interpolation = cv2.INTER_AREA)            
+        img1_arr = np.zeros((self.batch_size,) + self.input_size, dtype="float32")
+        img2_arr = np.zeros((self.batch_size,) + self.input_size, dtype="float32")
+        for i, pair in enumerate(pairs):
+            img1 = tf.keras.preprocessing.image.load_img(pair[0], target_size=self.input_size, color_mode='grayscale')
+            img2 = tf.keras.preprocessing.image.load_img(pair[1], target_size=self.input_size, color_mode='grayscale')
+            img1 = cv2.resize(np.array(img1), self.input_size[0:2], interpolation = cv2.INTER_AREA)            
+            img2 = cv2.resize(np.array(img2), self.input_size[0:2], interpolation = cv2.INTER_AREA)            
             if self.data_augmentation:
-                anch = self.apply_data_augmentation(anch) if data_augment[i][0] else anch
-                pos = self.apply_data_augmentation(pos) if data_augment[i][1] else pos
-                neg = self.apply_data_augmentation(neg) if data_augment[i][1] else neg
+                img1 = self.apply_data_augmentation(img1) if data_augment[i][0] else img1
+                img2 = self.apply_data_augmentation(img2) if data_augment[i][1] else img2
                 
-            anchour_arr[i] = np.array(anch).reshape(self.input_size)
-            positive_arr[i] = np.array(pos).reshape(self.input_size)
-            negative_arr[i] = np.array(neg).reshape(self.input_size)
-        return [anchour_arr, positive_arr, negative_arr]
+            img1_arr[i] = np.array(img1).reshape(self.input_size)
+            img2_arr[i] = np.array(img2).reshape(self.input_size)
+        return [img1_arr, img2_arr], np.array(labels)
     
     def on_epoch_end(self):
         if self.shuffle:

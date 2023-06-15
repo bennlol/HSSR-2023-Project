@@ -24,13 +24,16 @@ def load_data(dir, split = (85,15), data_percent_used = 100):
     classlist = []
     for root, dirpath, names in os.walk(data_dir):
         for name in names:
-            if root[-1] != "-1" and name[-3:]=='png':
+            if (root[-1] == "1" or root[-1] == "0") and name[-3:]=='png':
                 soft_path = os.path.join(root, name)
                 filelist.append(soft_path)
                 classlist.append(root[-1])
     filelist = filelist[:int(len(filelist) * data_percent_used/100)]
     classlist = classlist[:int(len(classlist) * data_percent_used/100)]
-    # filelist = np.random.choice(filelist, size=3, replace=False)
+    indices = np.arange(len(filelist))
+    np.random.shuffle(indices)
+    filelist = [filelist[i] for i in indices]
+    classlist = [classlist[i] for i in indices]
     split_index = int(split[0]/100 * len(filelist)) 
     return filelist[:split_index], classlist[:split_index], filelist[split_index:], classlist[split_index:]
 

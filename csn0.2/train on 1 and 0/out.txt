@@ -1,0 +1,12 @@
+Epoch 1/6
+546/546 [==============================] - 142s 250ms/step - loss: 0.3632 - accuracy: 0.7446 - val_loss: 0.1284 - val_accuracy: 0.9923
+Epoch 2/6
+546/546 [==============================] - 138s 252ms/step - loss: 0.1532 - accuracy: 0.8705 - val_loss: 0.1004 - val_accuracy: 0.9962
+Epoch 3/6
+546/546 [==============================] - 139s 254ms/step - loss: 0.1439 - accuracy: 0.8819 - val_loss: 0.0656 - val_accuracy: 0.9783
+Epoch 4/6
+546/546 [==============================] - 134s 244ms/step - loss: 0.1390 - accuracy: 0.8898 - val_loss: 0.1208 - val_accuracy: 0.9541
+Epoch 5/6
+546/546 [==============================] - 135s 247ms/step - loss: 0.1396 - accuracy: 0.8883 - val_loss: 0.0827 - val_accuracy: 0.9974
+Epoch 6/6
+546/546 [==============================] - 145s 265ms/step - loss: 0.1355 - accuracy: 0.8901 - val_loss: 0.1024 - val_accuracy: 0.9668

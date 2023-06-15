@@ -1,0 +1,35 @@
+Model: "model_5"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_11 (InputLayer)          [(None, 400, 400, 1  0           []                               
+                                )]                                                                
+                                                                                                  
+ input_12 (InputLayer)          [(None, 400, 400, 1  0           []                               
+                                )]                                                                
+                                                                                                  
+ sequential_5 (Sequential)      (None, 64)           17473792    ['input_11[0][0]',               
+                                                                  'input_12[0][0]']               
+                                                                                                  
+ lambda_5 (Lambda)              (None, 1)            0           ['sequential_5[0][0]',           
+                                                                  'sequential_5[1][0]']           
+                                                                                                  
+ batch_normalization_29 (BatchN  (None, 1)           4           ['lambda_5[0][0]']               
+ ormalization)                                                                                    
+                                                                                                  
+ dense_23 (Dense)               (None, 1)            2           ['batch_normalization_29[0][0]'] 
+                                                                                                  
+==================================================================================================
+Total params: 17,473,798
+Trainable params: 17,473,316
+Non-trainable params: 482
+__________________________________________________________________________________________________
+None
+Epoch 1/4
+1464/1464 [==============================] - 371s 250ms/step - loss: 0.2749 - accuracy: 0.6915 - val_loss: 0.2141 - val_accuracy: 0.7192
+Epoch 2/4
+1464/1464 [==============================] - 361s 247ms/step - loss: 0.2030 - accuracy: 0.7205 - val_loss: 0.1979 - val_accuracy: 0.7418
+Epoch 3/4
+1464/1464 [==============================] - 362s 247ms/step - loss: 0.2044 - accuracy: 0.7150 - val_loss: 0.2096 - val_accuracy: 0.7240
+Epoch 4/4
+1464/1464 [==============================] - 363s 248ms/step - loss: 0.2029 - accuracy: 0.7195 - val_loss: 0.2117 - val_accuracy: 0.7298

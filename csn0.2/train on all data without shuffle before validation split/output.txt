@@ -1,0 +1,39 @@
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to
+==================================================================================================
+ input_1 (InputLayer)           [(None, 400, 400, 1  0           []
+                                )]
+
+ input_2 (InputLayer)           [(None, 400, 400, 1  0           []
+                                )]
+
+ sequential (Sequential)        (None, 64)           17473792    ['input_1[0][0]',
+                                                                  'input_2[0][0]']
+
+ lambda (Lambda)                (None, 1)            0           ['sequential[0][0]',
+                                                                  'sequential[1][0]']
+
+ batch_normalization_4 (BatchNo  (None, 1)           4           ['lambda[0][0]']
+ rmalization)
+
+ dense_3 (Dense)                (None, 1)            2           ['batch_normalization_4[0][0]']
+
+==================================================================================================
+Total params: 17,473,798
+Trainable params: 17,473,316
+Non-trainable params: 482
+__________________________________________________________________________________________________
+None
+Epoch 1/6
+1464/1464 [==============================] - 1919s 1s/step - loss: 0.2348 - accuracy: 0.7904 - val_loss: 0.3337 - val_accuracy: 0.6274
+Epoch 2/6
+1464/1464 [==============================] - 1886s 1s/step - loss: 0.1877 - accuracy: 0.8411 - val_loss: 0.2214 - val_accuracy: 0.7341
+Epoch 3/6
+1464/1464 [==============================] - 1951s 1s/step - loss: 0.1816 - accuracy: 0.8492 - val_loss: 0.2424 - val_accuracy: 0.6889
+Epoch 4/6
+1464/1464 [==============================] - 1979s 1s/step - loss: 0.1845 - accuracy: 0.8450 - val_loss: 0.2118 - val_accuracy: 0.7514
+Epoch 5/6
+1464/1464 [==============================] - 1872s 1s/step - loss: 0.1801 - accuracy: 0.8490 - val_loss: 0.2013 - val_accuracy: 0.7260
+Epoch 6/6
+1464/1464 [==============================] - 1871s 1s/step - loss: 0.1799 - accuracy: 0.8467 - val_loss: 0.2259 - val_accuracy: 0.7255

@@ -57,7 +57,7 @@ class Siamese_data_gen(Sequence):
             anchour_arr[i] = np.array(anch).reshape(self.input_size)
             positive_arr[i] = np.array(pos).reshape(self.input_size)
             negative_arr[i] = np.array(neg).reshape(self.input_size)
-        return [anchour_arr, positive_arr, negative_arr], None
+        return [anchour_arr, positive_arr, negative_arr]
     
     def on_epoch_end(self):
         if self.shuffle:

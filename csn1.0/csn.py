@@ -48,7 +48,7 @@ def euclid_dist(vects):
 
 
 def loss(margin=1):
-    def triplet_loss(y_true, y_pred, margin=1):
+    def triplet_loss(y_pred, margin=1):
         anchor, positive, negative = y_pred[:, 0], y_pred[:, 1], y_pred[:, 2]
         distance_positive = tf.math.reduce_sum(tf.math.square(anchor - positive), axis=-1)
         distance_negative = tf.math.reduce_sum(tf.math.square(anchor - negative), axis=-1)
@@ -101,7 +101,7 @@ tower1 = model(input1)
 tower2 = model(input2)
 tower3 = model(input3)
 
-merge_layer = Lambda(euclid_dist)([tower1, tower2,tower3])
+merge_layer = Lambda(euclid_dist)([tower1, tower2, tower3])
 output_layer = merge_layer
 siamese = Model(inputs=[input1, input2, input3], outputs=output_layer)
 

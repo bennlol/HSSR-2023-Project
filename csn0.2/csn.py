@@ -2,7 +2,6 @@ from keras.models import Sequential
 import tensorflow as tf
 from keras import Model
 from keras.layers import *
-from keras.preprocessing.image import ImageDataGenerator
 from keras.regularizers import l2
 import matplotlib.image  as mpimg
 import matplotlib.pyplot as plt
@@ -79,10 +78,10 @@ model.add(Dropout(0.4))
 
 model.add(Flatten())
 
-model.add(Dense(256, activation='relu', kernel_regularizer=l2(0.001)))
+model.add(Dense(256, activation='relu', kernel_regularizer=l2(0.0015)))
 model.add(Dropout(0.4))
 
-model.add(Dense(128, activation='relu', kernel_regularizer=l2(0.001)))
+model.add(Dense(128, activation='relu', kernel_regularizer=l2(0.0015)))
 model.add(Dropout(0.4))
 
 model.add(Dense(64, activation='relu', kernel_regularizer=l2(0.001)))
@@ -102,8 +101,8 @@ siamese = Model(inputs=[input1, input2], outputs=output_layer)
 siamese.compile(loss=loss(margin=margin), optimizer="RMSprop", metrics=["accuracy"])
 print(siamese.summary())
 
-traingen = Siamese_data_gen(train_data_paths, train_class_data, batch_size = batch_size, input_size=inputShape, shuffle = False)
-valgen = Siamese_data_gen(val_data_paths, val_class_data, batch_size = batch_size, input_size=inputShape, shuffle=False)
+traingen = Siamese_data_gen(train_data_paths, train_class_data, batch_size = batch_size, input_size=inputShape, shuffle = True)
+valgen = Siamese_data_gen(val_data_paths, val_class_data, batch_size = batch_size, input_size=inputShape, shuffle=True, data_augmentation = False)
 
 #(path) (name, type)
 history = siamese.fit(

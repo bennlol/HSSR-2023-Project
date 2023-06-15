@@ -13,7 +13,7 @@ import sys
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 DATA_DIR = 'clusters'
 
-epochs = 6
+epochs = 4
 batch_size = 16
 margin = 1
 inputShape = (400,400,1)
@@ -104,6 +104,8 @@ siamese = Model(inputs=[input1, input2], outputs=output_layer)
 siamese.compile(loss=loss(margin=margin), optimizer="RMSprop", metrics=["accuracy"])
 print(siamese.summary())
 
+earlyStopping = tf.keras.callbacks.EarlyStopping(patience = 1)
+
 traingen = Siamese_data_gen(train_data_paths, train_class_data, batch_size = batch_size, input_size=inputShape, shuffle = True)
 valgen = Siamese_data_gen(val_data_paths, val_class_data, batch_size = batch_size, input_size=inputShape, shuffle=True, data_augmentation = False)
 
@@ -113,6 +115,7 @@ history = siamese.fit(
     validation_data=valgen,
     batch_size=batch_size,
     epochs=epochs,
+    callbacks = [earlyStopping]
 )
 
 siamese_json = siamese.to_json()
